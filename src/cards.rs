@@ -153,14 +153,14 @@ pub enum Month {
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum Suit {
-    Light(Light),
-    Earth(Earth),
+    Hikari(Hikari),
+    Tane(Tane),
     Tanzaku(Tanzaku),
-    Junk,
+    Kasu,
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
-pub enum Light {
+pub enum Hikari {
     Crane,
     Curtain,
     Moon,
@@ -169,7 +169,7 @@ pub enum Light {
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
-pub enum Earth {
+pub enum Tane {
     BushWarbler,
     Cuckoo,
     Bridge,
@@ -192,81 +192,81 @@ const CARDS: [(Month, [Suit; 4]); 12] = [
     (
         Month::January,
         [
-            Suit::Junk,
-            Suit::Junk,
+            Suit::Kasu,
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Poetry),
-            Suit::Light(Light::Crane),
+            Suit::Hikari(Hikari::Crane),
         ],
     ),
     (
         Month::February,
         [
-            Suit::Junk,
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Poetry),
-            Suit::Earth(Earth::BushWarbler),
-            Suit::Junk,
+            Suit::Tane(Tane::BushWarbler),
+            Suit::Kasu,
         ],
     ),
     (
         Month::March,
         [
-            Suit::Light(Light::Curtain),
-            Suit::Junk,
-            Suit::Junk,
+            Suit::Hikari(Hikari::Curtain),
+            Suit::Kasu,
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Poetry),
         ],
     ),
     (
         Month::April,
         [
-            Suit::Junk,
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Red),
-            Suit::Junk,
-            Suit::Earth(Earth::Cuckoo),
+            Suit::Kasu,
+            Suit::Tane(Tane::Cuckoo),
         ],
     ),
     (
         Month::May,
         [
-            Suit::Earth(Earth::Bridge),
-            Suit::Junk,
-            Suit::Junk,
+            Suit::Tane(Tane::Bridge),
+            Suit::Kasu,
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Red),
         ],
     ),
     (
         Month::June,
         [
-            Suit::Junk,
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Blue),
-            Suit::Junk,
-            Suit::Earth(Earth::Butterfly),
+            Suit::Kasu,
+            Suit::Tane(Tane::Butterfly),
         ],
     ),
     (
         Month::July,
         [
-            Suit::Earth(Earth::Boar),
-            Suit::Junk,
+            Suit::Tane(Tane::Boar),
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Red),
-            Suit::Junk,
+            Suit::Kasu,
         ],
     ),
     (
         Month::August,
         [
-            Suit::Junk,
-            Suit::Earth(Earth::Goose),
-            Suit::Junk,
-            Suit::Light(Light::Moon),
+            Suit::Kasu,
+            Suit::Tane(Tane::Goose),
+            Suit::Kasu,
+            Suit::Hikari(Hikari::Moon),
         ],
     ),
     (
         Month::September,
         [
-            Suit::Junk,
-            Suit::Earth(Earth::Sake),
-            Suit::Junk,
+            Suit::Kasu,
+            Suit::Tane(Tane::Sake),
+            Suit::Kasu,
             Suit::Tanzaku(Tanzaku::Blue),
         ],
     ),
@@ -274,27 +274,27 @@ const CARDS: [(Month, [Suit; 4]); 12] = [
         Month::October,
         [
             Suit::Tanzaku(Tanzaku::Blue),
-            Suit::Junk,
-            Suit::Junk,
-            Suit::Earth(Earth::Deer),
+            Suit::Kasu,
+            Suit::Kasu,
+            Suit::Tane(Tane::Deer),
         ],
     ),
     (
         Month::November,
         [
-            Suit::Light(Light::Michikaze),
-            Suit::Earth(Earth::Swallow),
+            Suit::Hikari(Hikari::Michikaze),
+            Suit::Tane(Tane::Swallow),
             Suit::Tanzaku(Tanzaku::Red),
-            Suit::Junk,
+            Suit::Kasu,
         ],
     ),
     (
         Month::December,
         [
-            Suit::Junk,
-            Suit::Junk,
-            Suit::Junk,
-            Suit::Light(Light::Phoenix),
+            Suit::Kasu,
+            Suit::Kasu,
+            Suit::Kasu,
+            Suit::Hikari(Hikari::Phoenix),
         ],
     ),
 ];
