@@ -33,9 +33,9 @@ pub struct CardAssetData {
 }
 
 impl CardAssetData {
-    const SIZE_X: f32 = 0.058;
-    const SIZE_Y: f32 = 0.001;
-    const SIZE_Z: f32 = 0.0865;
+    pub const SIZE_X: f32 = 0.058;
+    pub const SIZE_Y: f32 = 0.001;
+    pub const SIZE_Z: f32 = 0.0865;
 
     pub fn create_entity_bundle(
         &self,
