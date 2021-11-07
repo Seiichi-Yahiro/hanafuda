@@ -68,23 +68,34 @@ pub fn setup_card_asset(
     let mesh = asset_server.load("mesh/card.gltf#Mesh0/Primitive0");
 
     #[cfg(not(debug_assertions))]
-    const IMAGE_PATH: &str = "textures/cards.jpg";
+    let material = {
+        let color = asset_server.load("textures/cards.jpg");
+        let roughness = asset_server.load("textures/card_roughness.png");
+        let normal = asset_server.load("textures/card_normal.png");
+
+        StandardMaterial {
+            base_color: Color::WHITE,
+            base_color_texture: Some(color),
+            roughness: 1.0,
+            metallic_roughness_texture: Some(roughness),
+            normal_map: Some(normal),
+            ..Default::default()
+        }
+    };
 
     #[cfg(debug_assertions)]
-    const IMAGE_PATH: &str = "textures/cards_debug.jpg";
+    let material = {
+        let color = asset_server.load("textures/cards_debug.jpg");
 
-    let color = asset_server.load(IMAGE_PATH);
-    let roughness = asset_server.load("textures/card_roughness.png");
-    let normal = asset_server.load("textures/card_normal.png");
+        StandardMaterial {
+            base_color: Color::WHITE,
+            base_color_texture: Some(color),
+            roughness: 0.2,
+            ..Default::default()
+        }
+    };
 
-    let material = materials.add(StandardMaterial {
-        base_color: Color::WHITE,
-        base_color_texture: Some(color),
-        roughness: 1.0,
-        metallic_roughness_texture: Some(roughness),
-        normal_map: Some(normal),
-        ..Default::default()
-    });
+    let material = materials.add(material);
 
     let pipeline = pipelines.add(PipelineDescriptor::default_config(ShaderStages {
         vertex: shaders.add(Shader::from_glsl(
