@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 bevy = { version = "0.5.0", features = ["jpeg"] }
-#bevy = { git = "https://github.com/bevyengine/bevy", rev = "ffde86efa049dbdaf4ae4be3cd64c4c1c0f776f3", features = ["jpeg"] }
+bevy_easings = { version = "0.4.0", default-features = false }
+rand = "0.8.4"

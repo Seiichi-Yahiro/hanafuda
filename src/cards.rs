@@ -12,7 +12,7 @@ pub struct TextureOffset {
 }
 
 impl TextureOffset {
-    fn new(x: u32, y: u32) -> Self {
+    pub fn new(x: u32, y: u32) -> Self {
         Self {
             value: Vec2::new(x as f32, y as f32),
         }
@@ -114,6 +114,8 @@ pub fn setup_card_asset(
         pipeline,
     };
 
+    commands.insert_resource(card_asset_data);
+
     render_graph.add_system_node(
         "texture_offset",
         RenderResourcesNode::<TextureOffset>::new(true),
@@ -122,28 +124,12 @@ pub fn setup_card_asset(
     render_graph
         .add_node_edge("texture_offset", base::node::MAIN_PASS)
         .unwrap();
+}
 
-    for (month_index, (month, suits)) in CARDS.iter().enumerate() {
-        for (suit_index, suit) in suits.iter().enumerate() {
-            let x = suit_index + (month_index / 4) * 4;
-            let y = month_index % 4;
-
-            let texture_offset = TextureOffset::new(x as u32, y as u32);
-
-            let transform = Transform::from_xyz(
-                CardAssetData::SIZE_X * x as f32 - CardAssetData::SIZE_X * 6.0
-                    + CardAssetData::SIZE_X / 2.0,
-                0.0,
-                CardAssetData::SIZE_Z * y as f32 - CardAssetData::SIZE_Z * 2.0
-                    + CardAssetData::SIZE_Z / 2.0,
-            );
-
-            let card = card_asset_data.create_entity_bundle(texture_offset, transform);
-            commands.spawn_bundle(card).insert(*month).insert(*suit);
-        }
-    }
-
-    commands.insert_resource(card_asset_data);
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+pub struct CardType {
+    pub month: Month,
+    pub suit: Suit,
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
@@ -199,7 +185,7 @@ pub enum Tanzaku {
     Blue,
 }
 
-const CARDS: [(Month, [Suit; 4]); 12] = [
+pub const CARDS: [(Month, [Suit; 4]); 12] = [
     (
         Month::January,
         [
