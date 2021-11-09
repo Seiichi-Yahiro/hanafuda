@@ -1,3 +1,4 @@
+use bevy::asset::HandleId;
 use bevy::prelude::*;
 use bevy::reflect::TypeUuid;
 use bevy::render::pipeline::{PipelineDescriptor, RenderPipeline};
@@ -28,6 +29,14 @@ pub struct CardBundle {
 
 pub struct CardAssetData {
     mesh: Handle<Mesh>,
+    texture: Handle<Texture>,
+
+    #[cfg(not(debug_assertions))]
+    roughness: Handle<Texture>,
+
+    #[cfg(not(debug_assertions))]
+    normal: Handle<Texture>,
+
     material: Handle<StandardMaterial>,
     pipeline: Handle<PipelineDescriptor>,
 }
@@ -36,6 +45,19 @@ impl CardAssetData {
     pub const SIZE_X: f32 = 0.058;
     pub const SIZE_Y: f32 = 0.001;
     pub const SIZE_Z: f32 = 0.0865;
+
+    pub fn handle_ids(&self) -> impl IntoIterator<Item = HandleId> {
+        #[cfg(not(debug_assertions))]
+        return [
+            self.mesh.id,
+            self.texture.id,
+            self.roughness.id,
+            self.normal.id,
+        ];
+
+        #[cfg(debug_assertions)]
+        return [self.mesh.id, self.texture.id];
+    }
 
     pub fn create_entity_bundle(
         &self,
@@ -65,38 +87,6 @@ pub fn setup_card_asset(
     mut shaders: ResMut<Assets<Shader>>,
     mut render_graph: ResMut<RenderGraph>,
 ) {
-    let mesh = asset_server.load("mesh/card.gltf#Mesh0/Primitive0");
-
-    #[cfg(not(debug_assertions))]
-    let material = {
-        let color = asset_server.load("textures/cards.jpg");
-        let roughness = asset_server.load("textures/card_roughness.png");
-        let normal = asset_server.load("textures/card_normal.png");
-
-        StandardMaterial {
-            base_color: Color::WHITE,
-            base_color_texture: Some(color),
-            roughness: 1.0,
-            metallic_roughness_texture: Some(roughness),
-            normal_map: Some(normal),
-            ..Default::default()
-        }
-    };
-
-    #[cfg(debug_assertions)]
-    let material = {
-        let color = asset_server.load("textures/cards_debug.jpg");
-
-        StandardMaterial {
-            base_color: Color::WHITE,
-            base_color_texture: Some(color),
-            roughness: 0.2,
-            ..Default::default()
-        }
-    };
-
-    let material = materials.add(material);
-
     let pipeline = pipelines.add(PipelineDescriptor::default_config(ShaderStages {
         vertex: shaders.add(Shader::from_glsl(
             ShaderStage::Vertex,
@@ -108,14 +98,6 @@ pub fn setup_card_asset(
         ))),
     }));
 
-    let card_asset_data = CardAssetData {
-        mesh,
-        material,
-        pipeline,
-    };
-
-    commands.insert_resource(card_asset_data);
-
     render_graph.add_system_node(
         "texture_offset",
         RenderResourcesNode::<TextureOffset>::new(true),
@@ -124,6 +106,54 @@ pub fn setup_card_asset(
     render_graph
         .add_node_edge("texture_offset", base::node::MAIN_PASS)
         .unwrap();
+
+    let mesh = asset_server.load("mesh/card.gltf#Mesh0/Primitive0");
+
+    #[cfg(not(debug_assertions))]
+    let card_asset_data = {
+        let color = asset_server.load("textures/cards.jpg");
+        let roughness = asset_server.load("textures/card_roughness.png");
+        let normal = asset_server.load("textures/card_normal.png");
+
+        let material = materials.add(StandardMaterial {
+            base_color: Color::WHITE,
+            base_color_texture: Some(color.clone()),
+            roughness: 1.0,
+            metallic_roughness_texture: Some(roughness.clone()),
+            normal_map: Some(normal.clone()),
+            ..Default::default()
+        });
+
+        CardAssetData {
+            mesh,
+            texture: color,
+            roughness,
+            normal,
+            material,
+            pipeline,
+        }
+    };
+
+    #[cfg(debug_assertions)]
+    let card_asset_data = {
+        let color = asset_server.load("textures/cards_debug.jpg");
+
+        let material = materials.add(StandardMaterial {
+            base_color: Color::WHITE,
+            base_color_texture: Some(color.clone()),
+            roughness: 0.2,
+            ..Default::default()
+        });
+
+        CardAssetData {
+            mesh,
+            texture: color,
+            material,
+            pipeline,
+        }
+    };
+
+    commands.insert_resource(card_asset_data);
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]

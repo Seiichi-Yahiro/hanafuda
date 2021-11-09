@@ -3,12 +3,20 @@ mod game;
 mod player;
 mod table;
 
+use crate::cards::CardAssetData;
 use crate::player::{OpponentHand, PlayerHand};
 use crate::table::{Pile, Table};
+use bevy::asset::LoadState;
 use bevy::pbr::AmbientLight;
 use bevy::prelude::*;
 use bevy::render::camera::PerspectiveProjection;
 use bevy_easings::EasingsPlugin;
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+enum AppState {
+    Load,
+    Game,
+}
 
 fn main() {
     App::build()
@@ -21,13 +29,34 @@ fn main() {
         .insert_resource(Table::default())
         .insert_resource(PlayerHand::default())
         .insert_resource(OpponentHand::default())
+        .add_state(AppState::Load)
         .add_plugins(DefaultPlugins)
         .add_plugin(EasingsPlugin)
-        .add_startup_system_to_stage(StartupStage::PreStartup, cards::setup_card_asset.system())
-        .add_startup_system(setup.system())
-        .add_startup_system(game::setup_game.system())
-        .add_startup_system_to_stage(StartupStage::PostStartup, game::deal_cards.system())
+        .add_startup_system(cards::setup_card_asset.system())
+        .add_system_set(SystemSet::on_update(AppState::Load).with_system(check_load_state.system()))
+        .add_system_set(
+            SystemSet::on_exit(AppState::Load)
+                .with_system(setup.system())
+                .with_system(game::setup_game.system()),
+        )
+        .add_system_set(SystemSet::on_enter(AppState::Game).with_system(game::deal_cards.system()))
         .run();
+}
+
+fn check_load_state(
+    mut state: ResMut<State<AppState>>,
+    asset_server: Res<AssetServer>,
+    card_asset_data: Res<CardAssetData>,
+) {
+    match asset_server.get_group_load_state(card_asset_data.handle_ids()) {
+        LoadState::Failed => {
+            eprintln!("Failed to load Assets!")
+        }
+        LoadState::Loaded => {
+            state.set(AppState::Game).unwrap();
+        }
+        LoadState::Loading | LoadState::NotLoaded => {}
+    }
 }
 
 fn setup(mut commands: Commands) {
