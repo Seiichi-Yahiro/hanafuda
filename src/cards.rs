@@ -6,6 +6,8 @@ use strum::{EnumIter, IntoEnumIterator};
 #[derive(Debug, Resource)]
 pub struct CardAssetData {
     color_texture: Handle<Image>,
+    roughness_texture: Handle<Image>,
+    normal_texture: Handle<Image>,
     meshes: HashMap<Card, Handle<Mesh>>,
 }
 
@@ -14,7 +16,7 @@ impl CardAssetData {
     pub const SIZE_Y: f32 = 5.4;
     pub const SIZE_Z: f32 = 0.2;
 
-    pub const TEXTURE_ROWS: u32 = 12;
+    pub const TEXTURE_ROWS: u32 = 13;
     pub const TEXTURE_COLUMNS: u32 = 4;
 
     fn create_mesh(x: u32, y: u32) -> Mesh {
@@ -108,8 +110,8 @@ impl CardAssetData {
             ],
         );
 
-        let uv_x = 1.0 / 4.0;
-        let uv_y = 1.0 / 12.0;
+        let uv_x = 1.0 / Self::TEXTURE_COLUMNS as f32;
+        let uv_y = 1.0 / Self::TEXTURE_ROWS as f32;
 
         let x = x as f32;
         let y = y as f32;
@@ -122,10 +124,10 @@ impl CardAssetData {
                 [uv_x * (x + 1.0), uv_y * (y + 1.0)],
                 [uv_x * (x + 1.0), uv_y * y],
                 //
-                [0.0, 0.0],
-                [0.0, 0.0],
-                [0.0, 0.0],
-                [0.0, 0.0],
+                [uv_x * x, 1.0 - uv_y],
+                [uv_x * x, 1.0],
+                [uv_x * (x + 1.0), 1.0],
+                [uv_x * (x + 1.0), 1.0 - uv_y],
                 //
                 [0.0, 0.0],
                 [0.0, 0.0],
@@ -158,11 +160,21 @@ impl CardAssetData {
             20, 23, 21, 21, 23, 22, //
         ])));
 
+        mesh.generate_tangents().unwrap();
+
         mesh
     }
 
     pub fn get_color_texture(&self) -> Handle<Image> {
         self.color_texture.clone()
+    }
+
+    pub fn get_roughness_texture(&self) -> Handle<Image> {
+        self.roughness_texture.clone()
+    }
+
+    pub fn get_normal_texture(&self) -> Handle<Image> {
+        self.normal_texture.clone()
     }
 
     pub fn get_mesh(&self, card: Card) -> Handle<Mesh> {
@@ -174,6 +186,8 @@ impl FromWorld for CardAssetData {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
         let color_texture = asset_server.load("textures/card_color.jpg");
+        let roughness_texture = asset_server.load("textures/card_roughness.png");
+        let normal_texture = asset_server.load("textures/card_normal.png");
 
         let mut mesh_assets = world.resource_mut::<Assets<Mesh>>();
 
@@ -183,6 +197,8 @@ impl FromWorld for CardAssetData {
 
         Self {
             color_texture,
+            roughness_texture,
+            normal_texture,
             meshes,
         }
     }

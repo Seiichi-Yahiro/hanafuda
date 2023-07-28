@@ -46,7 +46,9 @@ fn setup(
     let material = StandardMaterial {
         base_color: Color::WHITE,
         base_color_texture: Some(card_asset_data.get_color_texture()),
-        perceptual_roughness: 0.75,
+        perceptual_roughness: 1.0,
+        metallic_roughness_texture: Some(card_asset_data.get_roughness_texture()),
+        normal_map_texture: Some(card_asset_data.get_normal_texture()),
         ..default()
     };
 
