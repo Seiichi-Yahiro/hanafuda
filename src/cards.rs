@@ -15,7 +15,7 @@ pub struct CardAssetData {
 impl CardAssetData {
     pub const SIZE_X: f32 = 3.2;
     pub const SIZE_Y: f32 = 5.4;
-    pub const SIZE_Z: f32 = 0.2;
+    pub const SIZE_Z: f32 = 0.1;
 
     pub const TEXTURE_ROWS: u32 = 13;
     pub const TEXTURE_COLUMNS: u32 = 4;
