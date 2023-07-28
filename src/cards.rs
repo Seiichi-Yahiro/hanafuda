@@ -181,6 +181,17 @@ impl CardAssetData {
     pub fn get_mesh(&self, card: Card) -> Handle<Mesh> {
         self.meshes.get(&card).unwrap().clone()
     }
+
+    pub fn create_material(&self) -> StandardMaterial {
+        StandardMaterial {
+            base_color: Color::WHITE,
+            base_color_texture: Some(self.get_color_texture()),
+            perceptual_roughness: 1.0,
+            metallic_roughness_texture: Some(self.get_roughness_texture()),
+            normal_map_texture: Some(self.get_normal_texture()),
+            ..default()
+        }
+    }
 }
 
 impl FromWorld for CardAssetData {
