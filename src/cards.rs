@@ -328,6 +328,67 @@ impl Card {
             | Card::DecemberKasu3 => Suit::Kasu,
         }
     }
+
+    pub fn to_month(self) -> Month {
+        match self {
+            Card::JanuaryHikari
+            | Card::JanuaryPoetryTanzaku
+            | Card::JanuaryKasu1
+            | Card::JanuaryKasu2 => Month::January,
+            Card::FebruaryTane
+            | Card::FebruaryPoetryTanzaku
+            | Card::FebruaryKasu1
+            | Card::FebruaryKasu2 => Month::February,
+            Card::MarchHikari | Card::MarchPoetryTanzaku | Card::MarchKasu1 | Card::MarchKasu2 => {
+                Month::March
+            }
+            Card::AprilTane | Card::AprilPlainTanzaku | Card::AprilKasu1 | Card::AprilKasu2 => {
+                Month::April
+            }
+            Card::MayTane | Card::MayPlainTanzaku | Card::MayKasu1 | Card::MayKasu2 => Month::May,
+            Card::JuneTane | Card::JuneBlueTanzaku | Card::JuneKasu1 | Card::JuneKasu2 => {
+                Month::June
+            }
+            Card::JulyTane | Card::JulyPlainTanzaku | Card::JulyKasu1 | Card::JulyKasu2 => {
+                Month::July
+            }
+            Card::AugustHikari | Card::AugustTane | Card::AugustKasu1 | Card::AugustKasu2 => {
+                Month::August
+            }
+            Card::SeptemberTane
+            | Card::SeptemberBlueTanzaku
+            | Card::SeptemberKasu1
+            | Card::SeptemberKasu2 => Month::September,
+            Card::OctoberTane
+            | Card::OctoberBlueTanzaku
+            | Card::OctoberKasu1
+            | Card::OctoberKasu2 => Month::October,
+            Card::NovemberHikari
+            | Card::NovemberTane
+            | Card::NovemberPlainTanzaku
+            | Card::NovemberKasu => Month::November,
+            Card::DecemberHikari
+            | Card::DecemberKasu1
+            | Card::DecemberKasu2
+            | Card::DecemberKasu3 => Month::December,
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Month {
+    January,
+    February,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December,
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
