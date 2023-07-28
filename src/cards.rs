@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::render::mesh::{Indices, PrimitiveTopology};
 use bevy::utils::HashMap;
+use std::cmp::Ordering;
 use strum::{EnumIter, IntoEnumIterator};
 
 #[derive(Debug, Resource)]
@@ -397,6 +398,25 @@ pub enum Suit {
     Tane(Tane),
     Tanzaku(Tanzaku),
     Kasu,
+}
+
+impl PartialOrd for Suit {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        match (self, other) {
+            (Self::Hikari(_), Self::Hikari(_))
+            | (Self::Tane(_), Self::Tane(_))
+            | (Self::Tanzaku(_), Self::Tanzaku(_))
+            | (Self::Kasu, Self::Kasu) => Some(Ordering::Equal),
+
+            (Self::Hikari(_), Self::Tane(_) | Self::Tanzaku(_) | Self::Kasu)
+            | (Self::Tane(_), Self::Tanzaku(_) | Self::Kasu)
+            | (Self::Tanzaku(_), Self::Kasu) => Some(Ordering::Greater),
+
+            (Self::Kasu, Self::Tanzaku(_) | Self::Tane(_) | Self::Hikari(_))
+            | (Self::Tanzaku(_), Self::Tane(_) | Self::Hikari(_))
+            | (Self::Tane(_), Self::Hikari(_)) => Some(Ordering::Less),
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
